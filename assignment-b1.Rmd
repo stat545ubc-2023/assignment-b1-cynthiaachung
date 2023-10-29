@@ -1,0 +1,97 @@
+
+## Function
+```{r}
+#' @title
+#' Summary of numeric variable within data frame
+#' 
+#' @description
+#' This function takes a numeric variable and a categorical variable within a data frame and calculates 
+#' the minimum, maximum, mean, median, and number of observations for the numeric values within each 
+#' group.
+#' 
+#' @param df A data frame that contains the categorical variable and numerical variable of interest. For 
+#' clarity and user intuitive purposes, this variable is named "df", shortform for **d**ata**f**rame.
+#' 
+#' @param categorical A categorical variable within the data frame. For clarity and user intuitive purposes,
+#' this variable is named "categorical". 
+#' 
+#' @param numerical A numeric variable within the data frame. For clarity and user intuitive purposes,
+#' this variable is named "numerical".
+#' 
+#' @return A summary table with statistical values.
+#' \itemize{
+#'   \item min: The minimum value per group(s). 
+#'   \item max: The maximum value per group(s). 
+#'   \item mean: The average value per group(s). 
+#'   \item med: The median value per group(s).
+#'   \item n: The number of value per group(s).
+#' } 
+
+summary_table <- function (df, categorical, numerical) 
+{check <- df %>%
+  pull({{numerical}}) %>%
+  is.numeric
+
+if (check) {
+   df %>%
+     group_by({{categorical}}) %>%
+     summarise(min = min({{numerical}}, na.rm = TRUE),
+            max = max({{numerical}}, na.rm = TRUE),
+            mean = mean({{numerical}}, na.rm = TRUE),
+            med = median({{numerical}}, na.rm = TRUE),
+            n = n())
+  } 
+
+else stop("the numerical variable you've included is not numerical")    
+}
+```
+
+## Examples
+**Setup**
+```{r}
+# set up
+library(rlang)
+library(testthat)
+```
+
+
+**Example 1**
+This example demonstrates the function calculating summary table for the numerical variable "Petal.Width" based on categorical variable "Species" within the data frame "iris".
+
+```{r}
+summary_table(iris, Species, Petal.Width)
+```
+
+**Example 2**
+This example demonstrates the function calculating a summary table for the numerical variable "weight" based on categorical variable "group" within the data frame "PlantGrowth".
+
+```{r}
+summary_table(PlantGrowth, group, weight)
+```
+
+**Example 3**
+This example demonstrates an input error where the numerical variable "Petal.Width" is written where a categorical variable is expected, and the categorical variable "Species" is written where the numerical variable is expected. Both are from the data frame "iris".
+
+```{r}
+summary_table(iris, Petal.Width, Species)
+```
+
+## Test the Function
+```{r}
+# calculates the summary table manually
+summary_table_manual <- iris %>%
+  group_by(Species) %>%
+  summarise(min = min(Petal.Width, na.rm = TRUE),
+            max = max(Petal.Width, na.rm = TRUE),
+            mean = mean(Petal.Width, na.rm = TRUE),
+            med = median(Petal.Width, na.rm = TRUE),
+            n = n())
+
+test_that("checks the summary_table function", {
+  expect_vector(summary_table_manual, summary_table(iris, Species, Petal.Width))
+  expect_named(summary_table(iris, Species, Petal.Width), c("Species", "min", "max", "mean", "med", "n"))
+  expect_error(summary_table(iris, Petal.Width, Species), 
+               "the numerical variable you've included is not numerical")
+  })
+```
+
