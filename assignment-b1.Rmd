@@ -27,12 +27,12 @@
 #'   \item n: The number of value per group(s).
 #' } 
 
-summary_table <- function (df, categorical, numerical) 
+summary_table <- function (df, categorical, numerical, na.rm = TRUE) 
 {check <- df %>%
   pull({{numerical}}) %>%
   is.numeric
 
-if (check) {
+if (check==TRUE) {
    df %>%
      group_by({{categorical}}) %>%
      summarise(min = min({{numerical}}, na.rm = TRUE),
@@ -87,9 +87,16 @@ summary_table_manual <- iris %>%
             med = median(Petal.Width, na.rm = TRUE),
             n = n())
 
-test_that("checks the summary_table function", {
-  expect_vector(summary_table_manual, summary_table(iris, Species, Petal.Width))
+test_that("checks that the summary_table function outputs the same table as the manual code", {
+  expect_vector(summary_table_manual, summary_table(iris, Species, Petal.Width)) # vector of expected size
+  expect_identical(summary_table_manual, summary_table(iris, Species, Petal.Width)) # contents the same
+  })
+
+test_that("checks that the output of the summary_table function has the expected columns", {
   expect_named(summary_table(iris, Species, Petal.Width), c("Species", "min", "max", "mean", "med", "n"))
+  })
+
+test_that("checks that an error occurs when a numerical variable is not included where it should be", {
   expect_error(summary_table(iris, Petal.Width, Species), 
                "the numerical variable you've included is not numerical")
   })
