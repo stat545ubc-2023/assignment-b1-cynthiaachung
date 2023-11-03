@@ -1,13 +1,9 @@
----
-title: "Assignment B1"
-output: github_document
-self_contained: true
-editor_options: 
-  markdown: 
-    wrap: sentence
----
+Assignment B1
+================
+
 ## Setup
-```{r}
+
+``` r
 # set up
 suppressMessages(library(rlang))
 suppressMessages(library(testthat))
@@ -15,7 +11,8 @@ suppressMessages(library(tidyverse))
 ```
 
 ## Function
-```{r}
+
+``` r
 #' @title
 #' Summary of numeric variable within data frame
 #' 
@@ -64,33 +61,60 @@ else stop("the numerical variable you've included is not numerical")
 ## Examples
 
 #### Example 1
-This example demonstrates the function calculating summary table for the numerical variable **"Petal.Width"** based on categorical variable **"Species"** within the data frame **"iris"**.
 
-```{r}
+This example demonstrates the function calculating summary table for the
+numerical variable **“Petal.Width”** based on categorical variable
+**“Species”** within the data frame **“iris”**.
+
+``` r
 # executing function
 summary_table(iris, Species, Petal.Width)
 ```
 
-#### Example 2
-This example demonstrates the function calculating a summary table for the numerical variable **"weight"** based on categorical variable **"group"** within the data frame **"PlantGrowth"**.
+    ## # A tibble: 3 × 6
+    ##   Species      min   max  mean   med     n
+    ##   <fct>      <dbl> <dbl> <dbl> <dbl> <int>
+    ## 1 setosa       0.1   0.6 0.246   0.2    50
+    ## 2 versicolor   1     1.8 1.33    1.3    50
+    ## 3 virginica    1.4   2.5 2.03    2      50
 
-```{r}
+#### Example 2
+
+This example demonstrates the function calculating a summary table for
+the numerical variable **“weight”** based on categorical variable
+**“group”** within the data frame **“PlantGrowth”**.
+
+``` r
 # executing function
 summary_table(PlantGrowth, group, weight)
 ```
 
-#### Example 3
-This example demonstrates an input error where the numerical variable **"Petal.Width"** is written where a categorical variable is expected, and the categorical variable **"Species"** is written where the numerical variable is expected. Both are from the data frame **"iris"**.
+    ## # A tibble: 3 × 6
+    ##   group   min   max  mean   med     n
+    ##   <fct> <dbl> <dbl> <dbl> <dbl> <int>
+    ## 1 ctrl   4.17  6.11  5.03  5.15    10
+    ## 2 trt1   3.59  6.03  4.66  4.55    10
+    ## 3 trt2   4.92  6.31  5.53  5.44    10
 
-```{r error = TRUE}
+#### Example 3
+
+This example demonstrates an input error where the numerical variable
+**“Petal.Width”** is written where a categorical variable is expected,
+and the categorical variable **“Species”** is written where the
+numerical variable is expected. Both are from the data frame **“iris”**.
+
+``` r
 # executing function error
 summary_table(iris, Petal.Width, Species)
 ```
 
+    ## Error in summary_table(iris, Petal.Width, Species): the numerical variable you've included is not numerical
+
 ## Test the Function
 
 #### Initial Setup
-```{r}
+
+``` r
 # calculates the summary table manually
 summary_table_manual <- iris %>%
   group_by(Species) %>%
@@ -102,25 +126,33 @@ summary_table_manual <- iris %>%
 ```
 
 #### Test 1
-```{r}
+
+``` r
 test_that("checks that the summary_table function outputs the same table as the manual code", {
   expect_vector(summary_table_manual, summary_table(iris, Species, Petal.Width)) # vector of expected size
   expect_identical(summary_table_manual, summary_table(iris, Species, Petal.Width)) # contents the same
   })
 ```
 
+    ## Test passed 🥳
+
 #### Test 2
-```{r}
+
+``` r
 test_that("checks that the output of the summary_table function has the expected columns", {
   expect_named(summary_table(iris, Species, Petal.Width), c("Species", "min", "max", "mean", "med", "n"))
   })
 ```
 
+    ## Test passed 🎉
+
 #### Test 3
-```{r}
+
+``` r
 test_that("checks that an error occurs when a numerical variable is not included where it should be", {
   expect_error(summary_table(iris, Petal.Width, Species), 
                "the numerical variable you've included is not numerical")
   })
 ```
 
+    ## Test passed 🥳

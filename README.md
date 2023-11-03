@@ -10,4 +10,5 @@ In this repository, there are two files:
 File Name | Purpose
 ----------|---------
 README.md | A markdown file that provides an overview of the assignment, as well as the files within the associated GitHub repository
-assignment-b1.Rmd | An R markdown file that contains the created function, as well as all associated documentation and tests.
+assignment-b1.Rmd | An R markdown file that contains the created function, as well as all associated documentation and tests. The contents of this is identical to that of "milestone_2.md".
+assignment-b1.md | A markdown file that contains the created function, as well as all associated documentation and tests. The contents of this is identical to that of "milestone_2.Rmd".
